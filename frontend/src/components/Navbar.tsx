@@ -15,7 +15,7 @@ export default function Navbar() {
       >
         {/* โลโก้แบรนด์ */}
         <a href="/" className="flex items-center gap-3 px-2 font-bold tracking-tight text-foreground">
-            <img src="tukasu.png" alt="" className="size-16 shrink-0 object-contain"/>
+            <img src="/images/tukasu.png" alt="" className="size-16 shrink-0 object-contain"/>
             <span className="text-center leading-tight">
                 ตูกะสู <br/>คอทเทจ รีสอร์ท
             </span>
