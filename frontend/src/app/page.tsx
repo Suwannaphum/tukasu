@@ -1,7 +1,32 @@
+"use client";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import { Autoplay } from "swiper/modules";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 export default function Home() {
+    const images = [
+    "/images/bg_home.jpg",
+    "/images/tukasu.png",
+    "/images/bg_home.jpg",
+  ];
+  const [current, setCurrent] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % images.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  },[]);
+  const rooms = [
+    { id: 1, name: "ห้อง 1", image: "/images/bg_home.jpg" },
+    { id: 2, name: "ห้อง 2", image: "/images/bg_home.jpg" },
+    { id: 3, name: "ห้อง 3", image: "/images/bg_home.jpg" },
+    { id: 4, name: "ห้อง 4", image: "/images/bg_home.jpg" },
+    { id: 5, name: "ห้อง 5", image: "/images/bg_home.jpg" },
+  ];
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   return (
     <main className="">
       {/* Section Hero */}
@@ -21,7 +46,7 @@ export default function Home() {
           <br />
           <p className="text-3xl">พักผ่อนสบายๆ ในบรรยากาศสุดชิลล์... แต่ตื่นเช้ามาพร้อมลุย!</p>
           <a href="/home">
-            <Button className="mt-5 px-6 py-3 bg-white text-black rounded">ติดต่อจองห้องพัก</Button>
+            <Button className="mt-5 px-6 py-3 bg-white text-black rounded-lg hover:bg-gray-800">ติดต่อจองห้องพัก</Button>
           </a>
         </div>
       </section>
@@ -48,36 +73,87 @@ export default function Home() {
             </div>
 
             {/* Right: Image */}
-            <div>
+            <div className="w-full h-[400px] overflow-hidden rounded-lg shadow-lg w-full h-[250px] md:h-[400px]">
               <img
-                src="/images/bg_home.jpg"
-                alt="Tukasu Resort"
-                className="w-full h-auto rounded-lg shadow-lg"
+                src={images[current]}
+                className="w-full h-full object-cover transition duration-500"
               />
+
+              {/* Dots */}
+              <div className="relative w-full h-[250px] md:h-[400px] rounded-lg overflow-hidden">
+                
+                {images.map((img, i) => (
+                  <img
+                    key={i}
+                    src={img}
+                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+                      i === current ? "opacity-100" : "opacity-0"
+                    }`}
+                  />
+                ))}
+
+              </div>
             </div>
 
           </div>
         </div>
       </section>
       {/* Section Room */}
-      <section className="relative bg-white text-black">
-        <div >
-            <h1>as;lkfj;laksj;flkjasd</h1>
-            <h1>as;lkfj;laksj;flkjasd</h1>
-            <h1>as;lkfj;laksj;flkjasd</h1>
-            <h1>as;lkfj;laksj;flkjasd</h1>
-            <h1>as;lkfj;laksj;flkjasd</h1>
-            <h1>as;lkfj;laksj;flkjasd</h1>
-            <h1>as;lkfj;laksj;flkjasd</h1>
-            <h1>as;lkfj;laksj;flkjasd</h1>
-            <h1>as;lkfj;laksj;flkjasd</h1>
-            <h1>as;lkfj;laksj;flkjasd</h1>
-            <h1>as;lkfj;laksj;flkjasd</h1>
-            <h1>as;lkfj;laksj;flkjasd</h1>
-            <h1>as;lkfj;laksj;flkjasd</h1>
-            <h1>as;lkfj;laksj;flkjasd</h1>
+      <section className="bg-white text-black py-20">
+        <div className="container mx-auto">
+
+          <h2 className="text-4xl font-bold text-center mb-10">
+            ห้องพักของเรา
+          </h2>
+
+          <Swiper
+            modules={[Autoplay]}
+            spaceBetween={20}
+            slidesPerView={1}
+            loop={true}
+            autoplay={{ delay: 2500 }}
+            breakpoints={{
+              768: { slidesPerView: 2 },
+              1024: { slidesPerView: 3 },
+            }}
+          >
+            {rooms.map((room) => (
+              <SwiperSlide key={room.id}>
+                <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:scale-105 transition">
+
+                  <img
+                    src={room.image}
+                    className="w-full h-60 object-cover cursor-pointer"
+                    onClick={() => setSelectedImage(room.image)}
+                  />
+
+                  <div className="p-4 text-center">
+                    <h3 className="text-xl font-semibold">
+                      {room.name}
+                    </h3>
+                  </div>
+
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+
+          {/* Button */}
+          <div className="flex justify-center mt-10">
+            <Link href="/rooms">
+              <Button className="px-8 py-3 bg-black text-white rounded-lg hover:bg-gray-800">
+                ดูห้องเพิ่มเติม
+              </Button>
+            </Link>
+          </div>
+
         </div>
       </section>
+      {selectedImage && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50" onClick={() => setSelectedImage(null)}>
+          <img src={selectedImage} className="max-w-4xl w-full rounded-lg"/>
+        </div>
+      )}
     </main>
     );
 }
